@@ -6,9 +6,14 @@ const onerror = require('koa-onerror')
 const bodyparser = require('koa-bodyparser')
 const logger = require('koa-logger')
 
+
+const mongoose = require('mongoose')
+const dbs = require('./config/db.config')
+
 const index = require('./routes/index')
 const users = require('./routes/users')
-
+const product = require('./routes/product')
+const user = require('./routes/user')
 // error handler
 onerror(app)
 
@@ -24,6 +29,18 @@ app.use(views(__dirname + '/views', {
   extension: 'pug'
 }))
 
+mongoose.connect(dbs.dbs, {
+  useNewUrlParser: true
+})
+var db = mongoose.connection;
+//输出连接日志
+db.on('error', function callback() {
+	console.log("Connection error");
+});
+ 
+db.once('open', function callback() {
+	console.log("Mongo working!");
+})
 // logger
 app.use(async (ctx, next) => {
   const start = new Date()
@@ -35,7 +52,8 @@ app.use(async (ctx, next) => {
 // routes
 app.use(index.routes(), index.allowedMethods())
 app.use(users.routes(), users.allowedMethods())
-
+app.use(product.routes(), product.allowedMethods())
+app.use(user.routes(), user.allowedMethods())
 // error-handling
 app.on('error', (err, ctx) => {
   console.error('server error', err, ctx)
