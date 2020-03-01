@@ -15,11 +15,43 @@ class Product {
       msg: 'test'
     }
   }
+  // 添加sku
+  async createSku(ctx, next) {
+    let code, msg, data
+    const { skuList, spuId } = ctx.request.body
+    const skuData = {
+      spuId,
+      skuList
+    }
+    let spuResult = await productSkuModel.find({spuId: spuId})
+    if(spuResult) {
+      let removeResult = await productSkuModel.remove({ spuId: spuId})
+      if(removeResult) {
+        console.log('删除成功')
+      }
+    }
+    const productSkuEntity = await productSkuModel.create(skuData)
+    let result = await productSkuEntity.save()
+    data = await productSkuModel.find({spuId: spuId})
+    if (!result) {
+      ctx.response.body = {
+        code: 0,
+        msg: '添加sku失败'
+      }
+    } else {
+      ctx.response.body = {
+        code: 200,
+        msg: '添加sku成功',
+        data
+      }
+    }
+
+  }
   // 添加商品
   async addProduct(ctx, next) {
     const form = new formidable.IncomingForm()
-    form.parse(ctx.request, async (err, fields, files) => {
-      if(err) {
+    form.parse(ctx.req, async (err, fields, files) => {
+      if (err) {
         console.log(err)
         ctx.response.body = {
           code: 0,
@@ -27,7 +59,7 @@ class Product {
         }
         return
       }
-      switch(fields) {
+      switch (fields) {
         case !fields.name:
           throw new Error('必须填写商品名称');
           break;
@@ -40,35 +72,22 @@ class Product {
         default:
           break;
       }
-      const addSkuList = []
-      fields.skuList.map((item,index) => {
-        addSkuList.push({
-          color: item.color,
-          version: item.version,
-          price: item.price,
-          pics: item.pics
-        })
-      })
       const skuData = {
-        id: fields.id,
-        name: fields.name,
-        spuId: fields.spuId,
-        categoryId: fields.categoryId,
-        skuList: addSkuList
+        skuList: fields.skuList
       }
-      
+
       const spuData = {
-        id: fields.id,
         skuId: fields.skuId,
         categoryId: fields.categoryId,
         name: fields.name,
         desc: fields.desc,
         pic: fields.pic,
+        detailPic: fields.detailPic
       }
       try {
-        const productSkuEntity = await productSkuModel.create(skuData)
+        // const productSkuEntity = await productSkuModel.create(skuData)
         const productSpuEntity = await productSpuModel.create(spuData)
-        await productSkuEntity.save()
+        // await productSkuEntity.save()
         await productSpuEntity.save()
       } catch (error) {
         console.log(error.message)
@@ -82,7 +101,7 @@ class Product {
   // 获取商品列表
   async getProductList(ctx, next) {
     const form = new formidable.IncomingForm()
-    form.parse(ctx.request, async(err, fields, files) => {
+    form.parse(ctx.req, async (err, fields, files) => {
       if (err) {
         ctx.response.body = {
           code: 0,
@@ -105,11 +124,11 @@ class Product {
       } catch (err) {
         console.log(err)
         ctx.response.body = {
-					code: 0,
-					type: 'GET_ERROR_PARAM',
-					message: err.message,
-				}
-				return
+          code: 0,
+          type: 'GET_ERROR_PARAM',
+          message: err.message,
+        }
+        return
       }
     })
   }
