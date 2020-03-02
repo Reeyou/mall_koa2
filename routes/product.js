@@ -9,7 +9,11 @@ router.post('/addProduct', Product.addProduct)
 
 router.get('/getProductList', Product.getProductList)
 
+router.get('/getProduct', Product.getProduct)
+
 router.post('/createSku', Product.createSku)
+
+router.get('/getSku', Product.getSku)
 
 router.post('/addCategory', Category.addCategory)
 

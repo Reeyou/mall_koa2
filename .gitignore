@@ -29,6 +29,7 @@ build/
 local.properties
 *.iml
 
+public/
 # node.js
 #
 node_modules/

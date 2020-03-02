@@ -14,9 +14,19 @@ class Category {
       //   }
       //   return
       // }
-      const {categoryname} = ctx.request.body
-      const data = {
-        categoryname
+      let data = {}
+      const {categoryname, type, categoryId = ''} = ctx.request.body
+      if(categoryId) {
+        data = {
+          categoryId,
+          categoryname,
+          type
+        }
+      } else {
+        data = {
+          categoryname,
+          type
+        }
       }
       try {
         const categoryEntity = await CategoryModel.create(data)
@@ -42,12 +52,9 @@ class Category {
   }
 
   async getCategoryList(ctx, next) {
-    const pageSize = 1, limit = 10
     let code, msg, list, total
     try {
       list = await CategoryModel.find({}, null, { lean: true })
-        .skip((pageSize - 1) * limit)
-        .limit(Number(limit))
       total = await CategoryModel.countDocuments()
       code = 200
       msg = '查找成功'

@@ -1,9 +1,9 @@
 const mongoose = require('mongoose')
 
 let productSpuSchema = new mongoose.Schema({
-  id: {type: Number,isRequired: true}, // 主键
-  skuid: {type: Number, isRequired: true},
-  categoryId: {type: Number, isRequired: true},
+  // id: {type: Number,isRequired: true}, // 主键
+  spuId: {type: Number, isRequired: true},
+  categoryId: {type: String, isRequired: true},
   name: {type: String, isRequired: true},
   desc: {type: String, isRequired: true},
   pic: {type: String, isRequired: true}, // 商品主图
