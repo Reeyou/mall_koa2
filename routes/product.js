@@ -17,7 +17,11 @@ router.get('/getSku', Product.getSku)
 
 router.post('/addCategory', Category.addCategory)
 
-router.get('/getCategoryList', Category.getCategoryList)
+router.post('/updateCategory', Category.updateCategory)
+
+router.post('/deleteCategory', Category.deleteCategory)
+
+router.get('/getCategoryList', Category.getCategoryList) 
 
 
 

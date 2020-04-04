@@ -11,6 +11,9 @@ let tagSchema = new mongoose.Schema({
   categoryname: {
     type: String,
     required: true
+  },
+  categoryImg: {
+    type: String
   }
 })
 
