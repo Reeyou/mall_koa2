@@ -9,19 +9,28 @@ export default class ServerResponse {
 
     // 操作成功
  static SUCCESS(ctx, msg, data) {
-        ctx.response.body = new ServerResponse(0, msg, data)
+        ctx.response.body = new ServerResponse(200, msg, data)
         return ctx.response.body
     }
 
     // 操作错误
     static ERROR(ctx, msg, data) {
-        ctx.response.body = new ServerResponse(1, msg, data)
+        ctx.response.status = 500
+        ctx.response.body = new ServerResponse(500, msg, data)
         return ctx.response.body
     }
 
     // 未登录
     static UN_LOGIN(ctx) {
-        ctx.response.body = new ServerResponse(10, 'UN_LOGIN', {})
+        ctx.response.status = 401
+        ctx.response.body = new ServerResponse(401, 'UN_LOGIN', {})
+        return ctx.response.body
+    }
+
+    // 没有权限 forbidden
+    static FORBIDDEN(ctx) {
+        ctx.response.status = 403
+        ctx.response.body = new ServerResponse(403, 'FORBIDDEN', {})
         return ctx.response.body
     }
 

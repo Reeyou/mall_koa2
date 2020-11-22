@@ -1,13 +1,15 @@
 const mongoose = require('mongoose')
 
 let productSkuSchema = new mongoose.Schema({
-  id: {type: Number}, // sku主键
-  spuId: {type: String, required: true}, // spu主键
-  // categoryId: {type: Number, isRequired: true},
-  enable: {type: Boolean, default: true},
-  skuList: {type: Array, default: true}, // sku规格
-  create_time: {type: String, default: new Date().getTime()},
-  update_time: {type: String, default: new Date().getTime()}
+    spu_id: { type: String, required: true }, // spu主键
+    // mall_price: { type: String, required: true },
+    // market_price: { type: String, required: true },
+    discount: { type: String },
+    cost_price: { type: String },
+    color: { type: Object },
+    size: { type: String },
+    version: { type: String },
+    img_list: { type: Array },
 })
 
 module.exports = mongoose.model('ProductSku', productSkuSchema)

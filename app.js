@@ -15,15 +15,17 @@ const users = require('./routes/users')
 const product = require('./routes/product')
 const user = require('./routes/user')
 const upload = require('./routes/upload')
-// error handler
+    // error handler
 onerror(app)
 
 // 使用koa-body代替koa-bodyparser和koa-multer解析文件上传
 app.use(koaBody({
-  multipart: true,
-  formidable: {
-      maxFileSize: 200*1024*1024    // 设置上传文件大小最大限制，默认2M
-  }
+    multipart: true,
+    formidable: {
+        maxFileSize: 200 * 1024 * 1024 // 设置上传文件大小最大限制，默认2M
+    },
+    formLimit: "10mb",
+    jsonLimit: "10mb"
 }));
 // middlewares
 // app.use(bodyparser({
@@ -34,27 +36,27 @@ app.use(logger())
 app.use(require('koa-static')(__dirname + '/public'))
 
 app.use(views(__dirname + '/views', {
-  extension: 'pug'
+    extension: 'pug'
 }))
 
 mongoose.connect(dbs.dbs, {
-  useNewUrlParser: true
+    useNewUrlParser: true
 })
 var db = mongoose.connection;
 //输出连接日志
 db.on('error', function callback() {
-	console.log("Connection error");
+    console.log("Connection error");
 });
- 
+
 db.once('open', function callback() {
-	console.log("Mongo working!");
-})
-// logger
-app.use(async (ctx, next) => {
-  const start = new Date()
-  await next()
-  const ms = new Date() - start
-  console.log(`${ctx.method} ${ctx.url} - ${ms}ms`)
+        console.log("Mongo working!");
+    })
+    // logger
+app.use(async(ctx, next) => {
+    const start = new Date()
+    await next()
+    const ms = new Date() - start
+    console.log(`${ctx.method} ${ctx.url} - ${ms}ms`)
 })
 
 // routes
@@ -66,7 +68,7 @@ app.use(upload.routes(), upload.allowedMethods())
 
 // error-handling
 app.on('error', (err, ctx) => {
-  console.error('server error', err, ctx)
+    console.error('server error', err, ctx)
 });
 
 module.exports = app
