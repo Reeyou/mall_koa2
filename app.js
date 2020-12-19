@@ -10,13 +10,23 @@ const koaBody = require('koa-body');
 const mongoose = require('mongoose')
 const dbs = require('./config/db.config')
 
+const session = require('koa-generic-session')
+const Redis = require('koa-redis')
+
 const index = require('./routes/index')
 const users = require('./routes/users')
 const product = require('./routes/product')
 const user = require('./routes/user')
 const upload = require('./routes/upload')
-    // error handler
+// error handler
 onerror(app)
+
+// session缓存
+app.use(
+    session({
+        store: new Redis()
+    })
+)
 
 // 使用koa-body代替koa-bodyparser和koa-multer解析文件上传
 app.use(koaBody({
@@ -40,19 +50,21 @@ app.use(views(__dirname + '/views', {
 }))
 
 mongoose.connect(dbs.dbs, {
-    useNewUrlParser: true
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useCreateIndex: true
 })
 var db = mongoose.connection;
 //输出连接日志
-db.on('error', function callback() {
+db.on('error', function callback () {
     console.log("Connection error");
 });
 
-db.once('open', function callback() {
-        console.log("Mongo working!");
-    })
-    // logger
-app.use(async(ctx, next) => {
+db.once('open', function callback () {
+    console.log("Mongo working!");
+})
+// logger
+app.use(async (ctx, next) => {
     const start = new Date()
     await next()
     const ms = new Date() - start
