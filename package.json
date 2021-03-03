@@ -35,7 +35,7 @@
     "moment": "^2.29.1",
     "mongoose": "^5.9.2",
     "nodemailer": "^6.4.17",
-    "pug": "^2.0.3",
+    "pug": "^3.0.1",
     "redis": "^3.0.2"
   },
   "devDependencies": {
